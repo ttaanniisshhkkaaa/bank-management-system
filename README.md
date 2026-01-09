@@ -10,6 +10,7 @@ This project demonstrates the use of structures, file handling, and modular prog
 - View existing account details using account number
 - Persistent data storage using binary files
 - Menu-driven user interface
+- Deposit and withdraw money from existing accounts
 
 ---
 
@@ -39,4 +40,5 @@ This project demonstrates the use of structures, file handling, and modular prog
 ## Notes
 - This project was built as a learning exercise to understand file handling and structures in C.
 - Additional features like deposit and withdrawal can be added in future versions.
+
 
