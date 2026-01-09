@@ -42,7 +42,7 @@ void MainMenu(){
             case 2:
             DisplayAccount();
             break;
-//will add depositing and withdrawing features later
+
             case 3:
             DepositMoney();
             break;
@@ -71,7 +71,7 @@ void CreateAccount(){
     scanf("%d", &a.AccountNumber);
 
     printf("\nEnter Account Holder's name:");
-    scanf(" %[^\n]", a.name);
+    scanf(" %[^\n]", a.name); 
 
     printf("\nEnter current balance: ");
     scanf("%f", &a.balance);
@@ -84,7 +84,7 @@ void SaveAccount(struct Account a){
     FILE *fp;
     fp=fopen("bank.dat", "ab"); //open in append mode (binary file- copies data exactly as it is)
     if(fp==NULL){
-        printf("File not found!");
+        printf("\nFile not found!\n");
         return; //if no file found it exits this function
     }
     fwrite(&a, sizeof(struct Account), 1, fp); //writes the record stored in 'a' covering 1 account's worth of data and puts it into file pointed by fp
@@ -121,9 +121,88 @@ void DisplayAccount(){
 }
 
 void DepositMoney() {
-    printf("\nDeposit feature coming soon.\n");
+   FILE *fp;
+   struct Account a;
+   int aNo;
+   float amount;
+   int found=0;
+
+   printf("\nEnter account number: ");
+   scanf("%d", &aNo);
+   printf("\nEnter amount you want to deposit: ");
+   scanf("%f", &amount);
+
+   if (amount <= 0) {
+    printf("Invalid amount!\n");
+    return;
+}
+
+   fp=fopen("bank.dat", "rb+"); //opens the file in read and write mode, only edits existing files does not create new ones (binary file)
+   if(fp==NULL){
+    printf("\nFile not found!\n");
+    return;
+   }
+   while(fread(&a, sizeof(struct Account), 1, fp)){
+    if(aNo==a.AccountNumber){
+        a.balance=a.balance+amount;
+        fseek(fp, -sizeof(struct Account), SEEK_CUR); //fseek moves file pointer back by one account so the updated record overwrites the same account, SEEK_CUR moves the pointer from its current position to 1 account backward using -sizeof
+
+        fwrite(&a, sizeof(struct Account), 1, fp);
+        printf("\nAmount deposited successfully!");
+        printf("\nUpdated balance: %.2f\n", a.balance);
+        found=1;
+        break;
+    }
+   }
+   fclose(fp);
+   if(!found){
+    printf("\nAccount does not exist!\n");
+   }
 }
 
 void WithdrawMoney() {
-    printf("\nWithdraw feature coming soon.\n");
+    FILE *fp;
+    struct Account a;
+    float amount;
+    int aNo;
+    int found=0;
+
+    printf("\nEnter Account number: ");
+    scanf("%d", &aNo);
+    printf("\nEnter amount you want to withdraw: ");
+    scanf("%f", &amount);
+
+    if (amount <= 0) {
+    printf("Invalid amount!\n");
+    return;
 }
+
+    fp=fopen("bank.dat", "rb+");
+    if(fp==NULL){
+        printf("\nFile not found!\n");
+        return;
+    }
+
+    while(fread(&a, sizeof(struct Account), 1, fp)){
+        if(aNo==a.AccountNumber){
+            if(amount<=a.balance){ //withdraw is same as deposit with this one extra step
+                a.balance=a.balance-amount;
+                fseek(fp, -sizeof(struct Account), SEEK_CUR);
+                fwrite(&a, sizeof(struct Account), 1, fp);
+                printf("\nAmount withdrawn successfully!");
+                printf("\nUpdated balance: %.2f\n", a.balance);
+            }
+            else{
+                printf("\nInsufficient balance!\n");
+            }
+            found=1;
+            break;
+        }
+    }
+    fclose(fp);
+    if(!found){
+        printf("\nAccount does not exist!\n");
+        return;
+    }
+}
+
