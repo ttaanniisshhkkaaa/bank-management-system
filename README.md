@@ -37,8 +37,13 @@ This project demonstrates the use of structures, file handling, and modular prog
 
 ---
 
-## Notes
-- This project was built as a learning exercise to understand file handling and structures in C.
-- Additional features like deposit and withdrawal can be added in future versions.
+## Planned Enchancements
+
+- Login and authentication system
+- Transaction history logging using files
+- Role-based menus (Admin and User)
+- Improved error handling and input validation
+- Fully modular code structure using `.c` and `.h` files
+
 
 
